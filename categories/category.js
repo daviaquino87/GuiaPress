@@ -1,5 +1,6 @@
-const sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 const connection = require("../database/database");
+
 //creating categories table in the bank
 const Category = connection.define('categories',{
     title:{
@@ -10,5 +11,6 @@ const Category = connection.define('categories',{
         allowNull:false,
     }
 })
+
 
 module.exports = Category;
