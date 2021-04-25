@@ -18,4 +18,6 @@ const Article = connection.define('articles',{
 Category.hasMany(Article); //a category have many articles
 Article.belongsTo(Category); //an article belongs to a category
 
+//Article.sync({force:true}); force create from table
+
 module.exports = Article;
