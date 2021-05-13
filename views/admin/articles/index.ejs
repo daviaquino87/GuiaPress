@@ -19,6 +19,7 @@
 
         <tbody>
         <% articles.forEach( article => { %>
+        <tr>
             <td> <%= article.id %> </td>
             <td> <%= article.title %> </td>
             <td> <%= article.slug %> </td>
@@ -31,6 +32,7 @@
                 </form>
 
             </td>
+        </tr>
         <% }); %>
         </tbody>
     </table>
