@@ -4,8 +4,8 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const connection = require("./database/database");
 
-const categoriesController = require("./categories/CategoriesController")
-const articlesController = require("./articles/ArticlesController")
+const categoriesController = require("./categories/CategoriesController");
+const articlesController = require("./articles/ArticlesController");
 
 const Article = require("./articles/article");
 const Category = require("./categories/category");
@@ -26,7 +26,7 @@ connection.authenticate().then(()=>{
     console.log("Conexão feita com sucesso");
 }).catch((error)=>{
     console.log(error);
-})
+});
 
 //passing the routes created in the controller
 app.use("/", categoriesController);
@@ -40,10 +40,14 @@ app.get("/" , (req, res) =>{
             ['id','DESC']
         ]
     }).then(articles => {
-        res.render("index" , {articles: articles})
-    })
-})
 
+        Category.findAll().then(categories => {
+            res.render("index" , {articles: articles , categories: categories})
+        });
+    });
+});
+
+//rota para exibição de artigo
 app.get("/:slug" , (req,res) => {
     var slug = req.params.slug;
     Article.findOne({
@@ -52,17 +56,42 @@ app.get("/:slug" , (req,res) => {
         }
     }).then( article => {
         if(article != undefined){
-            res.render("article", {article:article})
+            Category.findAll().then(categories => {
+                res.render("article" , {article: article , categories: categories})
+            });
         }else{
             res.redirect("/")
         }
     }).catch( err => {
         res.redirect("/");
         console.log(err);
-    })
-})
+    });
+});
+//debugar a rota de baixow
+app.get("/category/:slug",(req,res) => {
+    var slug = req.params.slug;
+    Category.findOne({
+        where : {
+            slug: slug
+        },
+        include:[{ model: Article }]
+    }).then(category => {
+        if(category != undefined){
+        
+        Category.findAll().then(categories => {
+            res.render("index", {articles: category.articles , categories: categories});
+        });
+        }else{
+            res.redirect("/"); 
+        }
+    }).catch( err => {
+        res.redirect("/")
+    });
+});
+
+
 
 //opening door
 app.listen(8080, ()=>{
-    console.log("servidor rodando")
-})
+    console.log("servidor rodando");
+});
